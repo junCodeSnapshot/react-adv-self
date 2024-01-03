@@ -20,16 +20,28 @@ interface ProductInCart extends Product {
     count: number
 }
 
-const products: Product[] = [product1, product2]
+const products: Product[] = [product1, product2];
+
 
 export const ShoppingPage = () => {
-
-    const [shoppingCart, setShoppingCart] = useState<{ [key:string]: ProductInCart  }>({}); //[key:string] means that accepts X times products with a key in string because they could be on interger.
-
-    const onProductCountChange = ({count, product}: {count: number, product: Product}) => {
-        console.log('onProductCountChange', count, product);
+    
+    const [shoppingCart, setShoppingCart] = useState<{ [key: string]: ProductInCart }>({}); //[key:string] means that accepts X times products with a key in string because they could be on interger.
+    
+    const onProductCountChange = ({ count, product }: { count: number, product: Product }) => {
+        setShoppingCart(oldShoppingCart => {
+            
+            if(count === 0){
+                const { [product.id]: toDelete, ...rest } = oldShoppingCart;
+                return rest
+            }
+            
+            return {
+                ...oldShoppingCart,
+                [ product.id ]: { ...product, count }
+            }
+        })
     }
-
+    
     return (
 
         <div>
@@ -43,7 +55,7 @@ export const ShoppingPage = () => {
 
                 {
                     products.map(product => (
-                        <ProductCart product={product} className='bg-dark' onChange= { onProductCountChange } key={product.id}>
+                        <ProductCart product={product} className='bg-dark' onChange={onProductCountChange} key={product.id}>
                             <ProductImage className='custom-image' />
                             <ProductTitle className='text-white' />
                             <ProductButtons className='custom-buttons' />
@@ -54,18 +66,24 @@ export const ShoppingPage = () => {
             </div>
 
             <div className='shopping-cart'>
-                <ProductCart product={product2} className='bg-dark'  style={{
-                    width:'100px'
-                }}>
-                    <ProductImage className='custom-image' />
-                    <ProductButtons className='custom-buttons' />
-                </ProductCart>
-                <ProductCart product={product1} className='bg-dark' style={{
-                    width:'100px'
-                }}>
-                    <ProductImage className='custom-image' />
-                    <ProductButtons className='custom-buttons' />
-                </ProductCart>
+
+                {
+                    Object.entries(shoppingCart).map( ([key, product])=> (
+                        <ProductCart
+                        key={ key }
+                        product={ product } 
+                        className='bg-dark' 
+                        style={{
+                            width: '100px'
+                        }}
+                        value={product.count}
+                        >
+                            <ProductImage className='custom-image' />
+                            <ProductButtons className='custom-buttons' />
+                        </ProductCart>
+                    ) )
+                }
+
             </div>
         </div>
     )
