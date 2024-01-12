@@ -1,46 +1,14 @@
 import { ProductButtons, ProductImage, ProductTitle, ProductCart } from '../components';
-import { Product } from '../interfaces/interfaces';
+import { products } from '../data/products';
+import { useShoppingCart } from '../hooks/useShoppingCart';
 import '../styles/custom-styles.css';
-import { useState } from 'react';
-
-const product1 = {
-    id: '1',
-    title: 'Coffee Mug - Card',
-    image: 'coffee-mug.png'
-}
-
-const product2 = {
-    id: '2',
-    title: 'Coffee Mug - Meme',
-    image: 'coffee-mug2.png'
-}
 
 
-interface ProductInCart extends Product {
-    count: number
-}
-
-const products: Product[] = [product1, product2];
 
 
 export const ShoppingPage = () => {
-    
-    const [shoppingCart, setShoppingCart] = useState<{ [key: string]: ProductInCart }>({}); //[key:string] means that accepts X times products with a key in string because they could be on interger.
-    
-    const onProductCountChange = ({ count, product }: { count: number, product: Product }) => {
-        setShoppingCart(oldShoppingCart => {
-            
-            if(count === 0){
-                const { [product.id]: toDelete, ...rest } = oldShoppingCart;
-                return rest
-            }
-            
-            return {
-                ...oldShoppingCart,
-                [ product.id ]: { ...product, count }
-            }
-        })
-    }
+
+    const { onProductCountChange, shoppingCart } = useShoppingCart();
     
     return (
 
@@ -55,7 +23,13 @@ export const ShoppingPage = () => {
 
                 {
                     products.map(product => (
-                        <ProductCart product={product} className='bg-dark' onChange={onProductCountChange} key={product.id}>
+                        <ProductCart 
+                            className='bg-dark' 
+                            key={product.id} 
+                            onChange={onProductCountChange} 
+                            product={product} 
+                            value={shoppingCart[product.id]?.count || 0}
+                        >
                             <ProductImage className='custom-image' />
                             <ProductTitle className='text-white' />
                             <ProductButtons className='custom-buttons' />
@@ -70,13 +44,14 @@ export const ShoppingPage = () => {
                 {
                     Object.entries(shoppingCart).map( ([key, product])=> (
                         <ProductCart
-                        key={ key }
-                        product={ product } 
-                        className='bg-dark' 
-                        style={{
-                            width: '100px'
-                        }}
-                        value={product.count}
+                            key={ key }
+                            product={ product } 
+                            className='bg-dark' 
+                            style={{
+                                width: '100px'
+                            }}
+                            value={ product.count }
+                            onChange={ onProductCountChange }
                         >
                             <ProductImage className='custom-image' />
                             <ProductButtons className='custom-buttons' />

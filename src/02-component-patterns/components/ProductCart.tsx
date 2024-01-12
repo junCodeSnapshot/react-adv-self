@@ -15,12 +15,13 @@ export interface Props {
     className?: string;
     style?: React.CSSProperties;
     onChange?: (args: onChangeArgs) => void;
+    value?: number;
 }
 
 
-export const ProductCart = ({ product, children, className, style, onChange }: Props) => {
+export const ProductCart = ({ product, children, className, style, onChange, value }: Props) => {
 
-    const { increaseBy, counterState } = useProduct( {onChange, product} );
+    const { increaseBy, counterState } = useProduct( {onChange, product, value} );
 
 
     return (
