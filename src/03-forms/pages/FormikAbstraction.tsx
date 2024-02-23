@@ -1,9 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { MyCheckbox, MySelect, MyTextInput } from '../components';
 import * as Yup from 'yup';
 
 import "../styles/styles.css";
 
-export const FormikComponents = () => {
+export const FormikAbstraction = () => {
 
     return (
         <div>
@@ -26,33 +27,29 @@ export const FormikComponents = () => {
                         lastName: Yup.string().max(10, 'Should be 10 characteres or less').required('Required'),
                         email: Yup.string().email('This is not a valid email').required('Required'),
                         terms: Yup.boolean().oneOf([true], 'You need to accept the terms and conditions'),
-                        jobType: Yup.string().notOneOf(['it-jr'], 'This option isn\'valid').required('Required')
+                        jobType: Yup.string().notOneOf(['it-jr'], 'This option isn\'t valid').required('Required')
                     })}
             >
                 {
                     (formik) => (
                         <Form>
-                            <label htmlFor="firstName">First Name</label>
-                            <Field name="firstName" type='text' />
-                            <ErrorMessage name='firstName' component='span'/>
 
-                            <label htmlFor="lastName">Last Name</label>
-                            <Field name='lastName' type='text' />
-                            <ErrorMessage name='lastName' component='span'/>
+                            <MyTextInput label='First Name' name='firstName' placeholder='Pedro'/>
 
-                            <label htmlFor="email">Email Address</label>
-                            <Field name='email' />
-                            <ErrorMessage name='email' component='span'/>
+                            <MyTextInput label='Last Name' name='lastName' placeholder='Cabernico'/>
 
-                            <label htmlFor="jobType">Job type</label>
-                            <Field name='jobType' as="select">
+                            <MyTextInput label='Email' name='email' placeholder='pedro@gmail.com' type='email'/>
+                            
+                            <MySelect label="Job Type" name="jobType">
                                 <option value="sfsfsd">Pick something</option>
                                 <option value="develeoper">develeoper</option>
                                 <option value="designer">Designer</option>
                                 <option value="it-senior">IT senior</option>
                                 <option value="it-jr">IT junior</option>
-                            </Field>
-                            <ErrorMessage name='jobType' component='span'/>
+                            </MySelect>
+
+
+                            <MyCheckbox label="Terms & Conditions" name="terms" /> 
 
                             <label>
                                 <Field name='terms' type="checkbox" style={{width: '15px'}}/>
